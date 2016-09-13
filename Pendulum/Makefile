@@ -57,8 +57,15 @@ clean_all: clean
 	@echo "Cleaning build directory"
 	@$(RM) $(TARGET)
 
-run_manual:
+all_data:
 	chmod +x $(TARGET)
+	./$(TARGET) -A 1 -V 3 -t 1e-3 -e harmonic -f "harmonic.dat"
+	./$(TARGET) -A 1 -V 3 -t 1e-3 -e exponential -f "exp.dat"
+	./$(TARGET) -A 1 -V 3 -t 1e-3 -f "general.dat"
+
+plot:
+	gnuplot plot.gp
+	open plot.ps
 
 info:
 	@echo "### Diagnostic info ###"
