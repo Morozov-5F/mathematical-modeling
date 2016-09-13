@@ -13,7 +13,7 @@
 
 #define DEFAULT_STEP            (1)
 #define MAX_STRING_SIZE         (4096)
-#define OPTIONS                 "a:e:f:hmo:r:t:vA:V:"
+#define OPTIONS                 "a:e:f:hmo:r:t:vA:F:T:V:"
 
 #define OPTION_MODE_GENERAL     "general"
 #define OPTION_MODE_HARMONIC    "harmonic"
@@ -21,6 +21,7 @@
 
 #define OPTION_DEFAULT_FILE     "data.dat"
 
+#define OPTION_DEFAULT_FRICTION (0.0)
 #define OPTION_DEFAULT_OMEGA    (1e+0)
 #define OPTION_DEFAULT_ANGLE    (1e-1)
 #define OPTION_DEFAULT_VELOCITY (0.0)
@@ -64,11 +65,15 @@ int main(int argc, char *const * argv)
 
     char file_name[MAX_STRING_SIZE] = OPTION_DEFAULT_FILE;
 
+    double params[2];
+
+    double friction  = OPTION_DEFAULT_FRICTION;
     double end_time  = OPTION_DEFAULT_END_TIME;
     double time_step = OPTION_DEFAULT_TIMESTEP;
     double omega     = OPTION_DEFAULT_OMEGA;
     double eps_rel   = OPTION_DEFAULT_RERROR;
     double eps_abs   = OPTION_DEFAULT_AERROR;
+
     double y[2]      = { OPTION_DEFAULT_ANGLE, OPTION_DEFAULT_VELOCITY };
 
     system_callback function = general_case_cb;
@@ -113,7 +118,9 @@ int main(int argc, char *const * argv)
                 goto done;
             break;
             case 'm':
-                /* Implemet manual mode */
+                fprintf(stderr, "Manual mode is not implemented yet\n");
+                retval = GSL_FAILURE;
+                goto done;
             break;
             case 'o':
                 if (1 != sscanf(optarg, "%le", &omega))
@@ -150,6 +157,14 @@ int main(int argc, char *const * argv)
                     goto done;
                 }
             break;
+            case 'F':
+                if (1 != sscanf(optarg, "%le", &friction))
+                {
+                    fprintf(stderr, "Error: bad friction coefficient value. Value should be in scientific notation (i.e 1e+2)\n");
+                    retval = GSL_ERANGE;
+                    goto done;
+                }
+            break;
             case 'T':
                 if (1 != sscanf(optarg, "%le", &end_time))
                 {
@@ -175,20 +190,21 @@ int main(int argc, char *const * argv)
 
     if (verbose)
     {
-        printf("# Absolute error:     %e\n", eps_abs);
-        printf("# Relative error:     %e\n", eps_rel);
-        printf("# Initial angle:      %e\n", y[0]);
-        printf("# Initial velocity:   %e\n", y[1]);
+        printf("# Absolute error:       %e\n", eps_abs);
+        printf("# Relative error:       %e\n", eps_rel);
+        printf("# Friction coefficient: %e\n", friction);
+        printf("# Initial angle:        %e\n", y[0]);
+        printf("# Initial velocity:     %e\n", y[1]);
         for (i = 0; i < sizeof(option_mode) / sizeof(option_mode_t); ++i)
         {
             if (function == option_mode[i].mode_callback)
             {
-                printf("# Mode name:          %s\n", option_mode[i].mode_name);
+                printf("# Mode name:            %s\n", option_mode[i].mode_name);
             }
         }
-        printf("# Time step:          %e\n", time_step);
-        printf("# End time:           %f\n", end_time);
-        printf("# File name:          %s\n", file_name);
+        printf("# Time step:            %e\n", time_step);
+        printf("# End time:             %f\n", end_time);
+        printf("# File name:            %s\n", file_name);
     }
 
     if (stdout != freopen(file_name, "w", stdout))
@@ -198,10 +214,13 @@ int main(int argc, char *const * argv)
         goto done;
     }
 
+    params[0] = omega;
+    params[1] = friction;
+
     sys.function = function;
     sys.jacobian = NULL;
     sys.dimension = 2;
-    sys.params = &omega;
+    sys.params = params;
 
     retval = solve_ode(&sys, y, eps_abs, eps_rel, time_step, end_time);
 done:
@@ -237,33 +256,39 @@ int solve_ode(gsl_odeiv2_system * sys, double y[], double eps_abs,
 
 int general_case_cb(double t, const double y[], double dydt[], void *params)
 {
-    double omega = *(double *)params;
+    double omega    = ((double *)params)[0];
+    double friction = ((double *)params)[0];
+
     UNUSED(t);
 
     dydt[0] = y[1];
-    dydt[1] = -gsl_pow_2(omega) * sin(y[0]);
+    dydt[1] = -gsl_pow_2(omega) * sin(y[0]) - friction * y[1];
 
     return GSL_SUCCESS;
 }
 
 int balance_cb(double t, const double y[], double dydt[], void *params)
 {
-    double omega = *(double *)params;
+    double omega    = ((double *)params)[0];
+    double friction = ((double *)params)[0];
+
     UNUSED(t);
 
     dydt[0] = y[1];
-    dydt[1] = gsl_pow_2(omega) * y[0];
+    dydt[1] = gsl_pow_2(omega) * y[0] - friction * y[1];
 
     return GSL_SUCCESS;
 }
 
 int small_angles_cb(double t, const double y[], double dydt[], void *params)
 {
-    double omega = *(double *)params;
+    double omega    = ((double *)params)[0];
+    double friction = ((double *)params)[0];
+
     UNUSED(t);
 
     dydt[0] = y[1];
-    dydt[1] = -(omega * omega) * y[0];
+    dydt[1] = -(omega * omega) * y[0] - friction * y[1];
 
     return GSL_SUCCESS;
 }
@@ -286,6 +311,7 @@ void print_usage()
     printf("  -t <time_step> Time step. Default is %e\n", OPTION_DEFAULT_TIMESTEP);
     printf("  -v             Verbose mode\n");
     printf("  -A <angle>     Initial angle (in radians). Default is %e\n", OPTION_DEFAULT_ANGLE);
+    printf("  -F <coeff>     Friction coefficient. Default is %e\n", OPTION_DEFAULT_FRICTION);
     printf("  -T <time>      End time. Default is %e\n", OPTION_DEFAULT_END_TIME);
     printf("  -V <velocity>  Initial velocity (in radians per second). Default is %e\n", OPTION_DEFAULT_VELOCITY);
 }

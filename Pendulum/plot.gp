@@ -28,6 +28,7 @@ set ylabel  "Velocity, radians per second"
 unset y2label
 set xrange [-5:5]
 set yrange [-5:5]
+
 plot "general.dat"  using 2:3 title "General case" axes x1y1 w l,\
-	 "harmonic.dat" using 2:3 title "Small angles" axes x1y1 w l,\
-	 "exp.dat"      using 2:3 title "Big angle" axes x1y1 w l
+	"harmonic.dat" using 2:3 title "Small angles" axes x1y1 w l,\
+	"exp.dat"      using 2:3 title "Big angle" axes x1y1 w l
