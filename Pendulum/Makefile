@@ -10,7 +10,7 @@ CFLAGS   = -ansi -Wall -Wpedantic
 # Flags for linker
 LDFLAGS	 = -L/usr/local/lib
 # Shared libraries to link
-L_FILES  = gsl
+L_FILES  = gsl gslcblas m
 # Include folders
 I_PATH   = /usr/local/include
 
@@ -43,7 +43,7 @@ TOREMOVE += $(addsuffix /*.dat,  $(PRJ_C_SRC_DIRS))
 TOREMOVE += $(addsuffix /*.log,  $(PRJ_C_SRC_DIRS))
 
 # Execute flags
-EXEC_FLAGS = -A 0 -t 1e-1 -T 100 -F 0.2
+EXEC_FLAGS = -A 0 -t 1e-1 -T 20 -F 0.2
 TOTAL_TRIES = 5
 
 $(TARGET): $(OBJS)
@@ -62,13 +62,13 @@ clean_all: clean
 	@echo "Cleaning build directory"
 	@$(RM) $(TARGET)
 
-all_data:
+example_data:
 	chmod +x $(TARGET)
 	./$(TARGET) $(EXEC_FLAGS) -e harmonic -f "harmonic.dat"
 	./$(TARGET) $(EXEC_FLAGS) -e exponential -f "exp.dat"
 	./$(TARGET) $(EXEC_FLAGS) -e general -f "general.dat"
 
-prepare_animate:
+prepare_animation:
 	@echo "Preparing animation for velocities -6 to 6"
 	@./$(TARGET) $(EXEC_FLAGS) -V 6 -f "general1.dat"
 	@./$(TARGET) $(EXEC_FLAGS) -V 5 -f "general2.dat"
@@ -83,7 +83,6 @@ prepare_animate:
 
 plot:
 	gnuplot plot.gp
-	open plot.ps
 
 animation:
 	@echo "Plotting animation"

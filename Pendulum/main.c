@@ -2,6 +2,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef __linux__
+#define __USE_POSIX2           (1)
+#endif
+
 #include <unistd.h>
 
 #include <gsl/gsl_math.h>
