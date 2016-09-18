@@ -69,7 +69,7 @@ It is possible to run some tests with `make` command:
 This is example animation created by `make prepare_animation animation` command:
 
 <p align='center'>
-	<img src='https://psv4.vk.me/c810335/u19823739/docs/3101e1fa3906/anim.gif'/>
+	<img src='http://i.giphy.com/26hirEarFnkWcnzxK.gif'/>
 </p>
 
 [assumption]: https://pp.vk.me/c637926/v637926739/b465/KKmfcRvLwvg.jpg
