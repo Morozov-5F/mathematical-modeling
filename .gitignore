@@ -45,3 +45,6 @@
 
 # Tags
 .tags
+
+# OS-specific
+.DS_Store

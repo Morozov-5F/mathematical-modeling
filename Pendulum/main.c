@@ -262,7 +262,7 @@ int solve_ode(gsl_odeiv2_system * sys, double y[], double eps_abs,
 int general_case_cb(double t, const double y[], double dydt[], void *params)
 {
     double omega    = ((double *)params)[0];
-    double friction = ((double *)params)[0];
+    double friction = ((double *)params)[1];
 
     UNUSED(t);
 
@@ -275,7 +275,7 @@ int general_case_cb(double t, const double y[], double dydt[], void *params)
 int balance_cb(double t, const double y[], double dydt[], void *params)
 {
     double omega    = ((double *)params)[0];
-    double friction = ((double *)params)[0];
+    double friction = ((double *)params)[1];
 
     UNUSED(t);
 
@@ -288,12 +288,12 @@ int balance_cb(double t, const double y[], double dydt[], void *params)
 int small_angles_cb(double t, const double y[], double dydt[], void *params)
 {
     double omega    = ((double *)params)[0];
-    double friction = ((double *)params)[0];
+    double friction = ((double *)params)[1];
 
     UNUSED(t);
 
     dydt[0] = y[1];
-    dydt[1] = -(omega * omega) * y[0] - friction * y[1];
+    dydt[1] = -gsl_pow_2(omega) * y[0] - friction * y[1];
 
     return GSL_SUCCESS;
 }
