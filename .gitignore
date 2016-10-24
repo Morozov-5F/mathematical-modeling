@@ -49,5 +49,10 @@
 # Tags
 .tags
 
+# Binaries
+pendulum
+string
+predator_prey
+
 # OS-specific
 .DS_Store
