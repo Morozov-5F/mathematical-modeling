@@ -40,6 +40,9 @@
 *.svg
 *.ps
 
+# Data files
+*.dat
+
 # Sublime project files
 *.sublime*
 

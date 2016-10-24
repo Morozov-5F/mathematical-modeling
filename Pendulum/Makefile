@@ -43,7 +43,8 @@ TOREMOVE += $(addsuffix /*.dat,  $(PRJ_C_SRC_DIRS))
 TOREMOVE += $(addsuffix /*.log,  $(PRJ_C_SRC_DIRS))
 
 # Execute flags
-EXEC_FLAGS = -A 0 -t 1e-1 -T 20 -F 0.2
+EXEC_FLAGS = -A 0.5 -t 1e-1 -T 20 -F 0
+EXEC_FLAGS_ANIM = -V 1 -t 1e-1 -T 20 -F 0
 TOTAL_TRIES = 5
 
 $(TARGET): $(OBJS)
@@ -64,22 +65,33 @@ clean_all: clean
 
 example_data:
 	chmod +x $(TARGET)
-	./$(TARGET) $(EXEC_FLAGS) -e harmonic -f "harmonic.dat"
-	./$(TARGET) $(EXEC_FLAGS) -e exponential -f "exp.dat"
-	./$(TARGET) $(EXEC_FLAGS) -e general -f "general.dat"
+	./$(TARGET) $(EXEC_FLAGS) -V 2 -e harmonic -f "harmonic.dat"
+	./$(TARGET) $(EXEC_FLAGS) -V 2 -e exponential -f "exp.dat"
+	./$(TARGET) $(EXEC_FLAGS) -V 2 -e general -f "general.dat"
 
 prepare_animation:
 	@echo "Preparing animation for velocities -6 to 6"
-	@./$(TARGET) $(EXEC_FLAGS) -V 6 -f "general1.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V 5 -f "general2.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V 4 -f "general3.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V 3 -f "general4.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V 2 -f "general5.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V -2  -f "general6.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V -3  -f "general7.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V -4  -f "general8.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V -5  -f "general9.dat"
-	@./$(TARGET) $(EXEC_FLAGS) -V -6 -f "general10.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A -5.5 -v -f "general1.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A -4.5 -f "general2.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A -3.5 -f "general3.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A -2.5 -f "general4.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A -1.5 -f "general5.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A -0.5 -f "general6.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A 0.5 -f "general7.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A 1.5  -f "general8.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A 2.5  -f "general9.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A 3.5  -f "general10.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A 4.5  -f "general11.dat"
+	@./$(TARGET) $(EXEC_FLAGS_ANIM) -A 5.5 -f "general12.dat"
+
+model_approximations:
+	@./$(TARGET) -A 3.15 -t 1e-1 -T 20 -F 0 -f "general_model1.dat" -e general
+	@./$(TARGET) -A 3.0 -t 1e-1 -T 20 -F 0 -f "general_model2.dat" -e general
+	@./$(TARGET) -A 2.9 -t 1e-1 -T 20 -F 0 -f "general_model3.dat" -e general
+	@./$(TARGET) -A 3.14 -t 1e-1 -T 20 -F 0 -f "approx_model1.dat" -e exponential
+	@./$(TARGET) -A 3.0 -t 1e-1 -T 20 -F 0 -f "approx_model2.dat" -e exponential
+	@./$(TARGET) -A 2.9 -t 1e-1 -T 20 -F 0 -f "approx_model3.dat" -e exponential
+	gnuplot compare.gp
 
 plot:
 	gnuplot plot.gp
