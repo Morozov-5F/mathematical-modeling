@@ -5,7 +5,7 @@ RM = rm -rf
 
 .PHONY: clean clean_all plot example_general all_data prepare_animate animation
 
-# Flags for c++ compiler
+# Flags for c compiler
 CFLAGS   = -ansi -Wall -Wpedantic
 # Flags for linker
 LDFLAGS	 = -L/usr/local/lib
@@ -24,7 +24,7 @@ LINK_BINARY = $(LD) $(LDFLAGS) $^ $(addprefix -l, $(L_FILES)) -o $@
 # This var contains folders with code in project
 PRJ_C_SRC_DIRS = ./
 
-# Object file to be
+# Object file to be produced
 OBJS += $(patsubst %.c, %.o, $(C_FILES))
 OBJS += $(patsubst %.c, %.o, $(wildcard  $(addsuffix /*.c, $(PRJ_C_SRC_DIRS))))
 
