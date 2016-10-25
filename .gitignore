@@ -58,3 +58,5 @@ predator_prey
 # OS-specific
 .DS_Store
 
+# Documents
+*.djvu
