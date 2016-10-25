@@ -43,7 +43,7 @@ TOREMOVE += $(addsuffix /*.dat,  $(PRJ_C_SRC_DIRS))
 TOREMOVE += $(addsuffix /*.log,  $(PRJ_C_SRC_DIRS))
 
 # Execute flags
-EXEC_FLAGS = -t 1e-1 -T 100
+EXEC_FLAGS = -t 1e-1 -T 20
 EXEC_FLAGS_ANIM = -t 1e-1 -T 20
 TOTAL_TRIES = 5
 
@@ -65,16 +65,14 @@ clean_all: clean
 
 example_data:
 	chmod +x $(TARGET)
-	./$(TARGET) $(EXEC_FLAGS) -v -A 0.667 -B 1.333 -C 1 -D 1 -p 1.8 -P 1.8
+	@for i in $$(seq 1 10); do \
+		point=`echo "scale = 3; ($$i * 0.1 + 0.8)" | bc`; \
+		./$(TARGET) $(EXEC_FLAGS) -v -A 0.667 -B 1.333 -C 1 -D 1 -p $$point -P $$point -f "data_$$i.dat"; \
+	done
 
 plot:
 	gnuplot plot.gp
-	@open direct.png
-	@open phase.png
-
-animation:
-	@echo "Plotting animation"
-	@gnuplot animate_plot.gp
+	@open plot.pdf
 
 info:
 	@echo "### Diagnostic info ###"

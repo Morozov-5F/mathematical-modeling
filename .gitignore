@@ -39,6 +39,7 @@
 *.png
 *.svg
 *.ps
+*.pdf
 
 # Data files
 *.dat
@@ -56,3 +57,4 @@ predator_prey
 
 # OS-specific
 .DS_Store
+
