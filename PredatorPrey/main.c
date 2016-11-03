@@ -290,14 +290,14 @@ void print_usage()
     printf("  -a <error>     Absolute error. Default is %e\n", OPTION_DEFAULT_RERROR);
     printf("  -f <file>      Output file. Default is " OPTION_DEFAULT_FILE "\n");
     printf("  -h             Print this message\n");
-    printf("  -p <value>     Prey initial population. Default is %lf\n", OPTION_DEFAULT_INIT_PREY_POPULATION);
+    printf("  -p <value>     Prey initial population. Default is %f\n", OPTION_DEFAULT_INIT_PREY_POPULATION);
     printf("  -r <error>     Relative error. Default is %e\n", OPTION_DEFAULT_RERROR);
     printf("  -t <time_step> Time step. Default is %e\n", OPTION_DEFAULT_TIMESTEP);
     printf("  -v             Verbose mode\n");
-    printf("  -A <value>     Prey birth ratio. Default is %lf\n", OPTION_DEFAULT_PREY_BR);
-    printf("  -B <value>     Prey extinct ratio. Default is %lf\n", OPTION_DEFAULT_PREY_ER);
-    printf("  -C <value>     Predator birth ratio. Default is %lf\n", OPTION_DEFAULT_PREDATOR_BR);
-    printf("  -D <value>     Predator extinct ratio. Default is %lf\n", OPTION_DEFAULT_PREDATOR_ER);
-    printf("  -P <value>     Predator initial population. Default is %lf\n", OPTION_DEFAULT_INIT_PREDATOR_POPULATION);
+    printf("  -A <value>     Prey birth ratio. Default is %f\n", OPTION_DEFAULT_PREY_BR);
+    printf("  -B <value>     Prey extinct ratio. Default is %f\n", OPTION_DEFAULT_PREY_ER);
+    printf("  -C <value>     Predator birth ratio. Default is %f\n", OPTION_DEFAULT_PREDATOR_BR);
+    printf("  -D <value>     Predator extinct ratio. Default is %f\n", OPTION_DEFAULT_PREDATOR_ER);
+    printf("  -P <value>     Predator initial population. Default is %f\n", OPTION_DEFAULT_INIT_PREDATOR_POPULATION);
     printf("  -T <time>      End time. Default is %e\n", OPTION_DEFAULT_END_TIME);
 }
