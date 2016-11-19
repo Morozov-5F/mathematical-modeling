@@ -49,7 +49,7 @@ set title   "Phase portrait" font "CMU Serif, 20"
 set xlabel  "First specie population, species"
 set ylabel  "Second specie population, species"
 
-print "Animating sequence began"
+print ">> Animating sequence began"
 
 set style line 1 lc rgb '#0060ad' lt 1 lw 2 pt 7 ps 2 # --- blue
 

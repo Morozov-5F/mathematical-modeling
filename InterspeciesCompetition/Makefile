@@ -3,7 +3,10 @@ CC = gcc
 LD = gcc
 RM = rm -rf
 
-.PHONY: clean clean_all plot example_general all_data prepare_animate animation
+TARGET = interspecies_communication
+TOPDIR = ..
+
+.PHONY: clean clean_all plot data all_data prepare_animate animation $(TARGET)
 
 # Flags for c compiler
 CFLAGS   = -ansi -Wall -Wpedantic
@@ -14,15 +17,13 @@ L_FILES  = gsl gslcblas m
 # Include folders
 I_PATH   = -I/usr/local/include
 
-TARGET = interspecies_communication
-
 COMPILE_C   = $(CC) $(CFLAGS) $(I_PATH) -MD -c $< -o $@
 LINK_BINARY = $(LD) $(LDFLAGS) $^ $(addprefix -l, $(L_FILES)) -o $@
 
 # This var is used to add C files that are not in project folders
 С_FILES +=
 # This var contains folders with code in project
-PRJ_C_SRC_DIRS = ./
+PRJ_C_SRC_DIRS = ./ first second third fourth
 
 # Object file to be produced
 OBJS += $(patsubst %.c, %.o, $(C_FILES))
@@ -71,78 +72,21 @@ clean_all: clean
 	@$(RM) $(TARGET)
 
 example_data:
-	chmod +x $(TARGET)
-	@echo "First case"
-	@mkdir -p first
-	@for i in $$(seq 1 10); do \
-		N1=`echo "scale = 3; ($$i * 0.1)" | bc`; \
-		N2=`echo "scale = 3; ($$i * 0.1 - 0.1)" | bc`; \
-		R1=3; \
-		A1=2; \
-		B1=1; \
-		R2=2; \
-		A2=1; \
-		B2=1; \
-		(cd first && ../$(TARGET) $(EXEC_FLAGS) -A $$A1 -B $$B1 -C $$R1 -D $$A2 -E $$B2 -F $$R2 -p $$N1 -P $$N2 -f "data_$$i.dat"); \
-	done
-	@echo "Second case"
-	@mkdir -p second
-	@for i in $$(seq 1 10); do \
-		N1=`echo "scale = 3; ($$i * 0.1)" | bc`; \
-		N2=`echo "scale = 3; ($$i * 0.1 - 0.1)" | bc`; \
-		R1=2; \
-		A1=1; \
-		B1=2; \
-		R2=3; \
-		A2=1; \
-		B2=1; \
-		(cd second && ../$(TARGET) $(EXEC_FLAGS) -A $$A1 -B $$B1 -C $$R1 -D $$A2 -E $$B2 -F $$R2 -p $$N1 -P $$N2 -f "data_$$i.dat"); \
-	done
-	@echo "Third case"
-	@mkdir -p third
-	@for i in $$(seq 0 10); do \
-		for j in $$(seq 0 10); do \
-			N1=`echo "scale = 3; ($$i * 0.5)" | bc`; \
-			N2=`echo "scale = 3; ($$j * 0.5)" | bc`; \
-			NUM=`echo "scale = 3; ($$i * 11 + $$j)" | bc`; \
-			R1=2; \
-			A1=4; \
-			B1=1; \
-			R2=4; \
-			A2=1; \
-			B2=1; \
-			(cd third && ../$(TARGET) $(EXEC_FLAGS) -A $$A1 -B $$B1 -C $$R1 -D $$A2 -E $$B2 -F $$R2 -p $$N1 -P $$N2 -f "data_$$NUM.dat"); \
-		done; \
-	done
-	@echo "Fourth case"
-	@mkdir -p fourth
-	@for i in $$(seq 0 10); do \
-		for j in $$(seq 0 10); do \
-			N1=`echo "scale = 3; ($$i * 0.1)" | bc`; \
-			N2=`echo "scale = 3; ($$j * 0.1)" | bc`; \
-			NUM=`echo "scale = 3; ($$i * 11 + $$j)" | bc`; \
-			R1=3; \
-			A1=1; \
-			B1=3; \
-			R2=2; \
-			A2=1; \
-			B2=1; \
-			(cd fourth && ../$(TARGET) $(EXEC_FLAGS) -A $$A1 -B $$B1 -C $$R1 -D $$A2 -E $$B2 -F $$R2 -p $$N1 -P $$N2 -f "data_$$NUM.dat"); \
-		done; \
-	done
+	@chmod +x $(TARGET)
+	@$(MAKE) -C first data
+	@$(MAKE) -C second data
+	@$(MAKE) -C third data
+	@$(MAKE) -C fourth data
 
 plot:
-	@echo "Plotting first target"
-	@(cd first && gnuplot plot.gp)
-	@echo "Plotting second target"
-	@(cd second && gnuplot plot.gp)
-	@echo "Plotting third target"
-	@(cd third && gnuplot plot.gp)
-	@echo "Plotting fourth target"
-	@(cd fourth && gnuplot plot.gp)
+	@$(MAKE) -C first pl
+	@$(MAKE) -C second pl
+	@$(MAKE) -C third pl
+	@$(MAKE) -C fourth pl
 
 info:
 	@echo "### Diagnostic info ###"
+	@echo "Top directory:      " $(TOPDIR)
 	@echo "Project directories:" $(PRJ_C_SRC_DIRS)
 	@echo "Project name: " $(TARGET)
 	@echo "C Files:      " $(wildcard  $(addsuffix *.c, $(PRJ_C_SRC_DIRS))) $(C_FILES)
