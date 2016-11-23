@@ -281,11 +281,10 @@ int lotka_volterra_jac_cb(double t, const double y[], double * dfdy,
     return GSL_SUCCESS;
 }
 
-/* "a:f:hp:r:t:vA:B:C:D:P:T:" */
 void print_usage()
 {
-    printf("OVERVIEW: Pendulum oscillations modelling program.\n\n");
-    printf("USAGE: pendulum [options]\n\n");
+    printf("OVERVIEW: Predator-prey simulation program.\n\n");
+    printf("USAGE: predator_prey [options]\n\n");
     printf("OPTIONS:\n");
     printf("  -a <error>     Absolute error. Default is %e\n", OPTION_DEFAULT_RERROR);
     printf("  -f <file>      Output file. Default is " OPTION_DEFAULT_FILE "\n");

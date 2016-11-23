@@ -12,6 +12,8 @@ Also, some tasks use GSL (GNU Scientific Library).
 
 ## Tasks
 
-More tasks to be added soon.
-
 * [Pendulum oscillations](Pendulum)
+* [String oscillations](String)
+* [Predator-prey simulation (Lotka-Volterra model)](PredatorPrey)
+* [Interspecies competition](InterspeciesCompetition)
+* [Improved predator-prey simulation (Holling-Tanner model)](SelfOscillations)

@@ -58,7 +58,7 @@ int main(int argc, char *const * argv)
     int x, n, t, i;
     int ts = 100;
     int n_max = 20;
-    int t_max = 10 ;
+    int t_max = 10;
     char buf[100] = "";
     int points = 1000;
     double * u1 = (double *)malloc(sizeof(double) * points * OPTION_DEFAULT_L + 1);
