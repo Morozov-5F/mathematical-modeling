@@ -14,4 +14,4 @@ set yrange [0:1]
 
 unset key
 
-plot "data.dat" w p pt 1 ps 0.5
+plot "data.dat" w p pt 1 ps 0.1

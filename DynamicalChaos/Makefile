@@ -69,7 +69,7 @@ clean_all: clean
 
 example_data: $(TARGET)
 	@chmod +x $(TARGET)
-	./$(TARGET) -a 1e-5 -r 1000 -v -x 1000
+	./$(TARGET) -a 1e-5 -r 1000 -v -x 100
 
 plot:
 	$(PLOT) plot.gp

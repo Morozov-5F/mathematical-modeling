@@ -26,7 +26,7 @@ double model_cb(double x[], void *params);
 
 void print_usage();
 
-int make_chaos(size_t x_points, size_t r_points);
+int make_chaos(size_t x_points, size_t r_points, double eps_abs);
 
 int main(int argc, char *const * argv)
 {
@@ -101,12 +101,12 @@ int main(int argc, char *const * argv)
         goto done;
     }
 
-    retval = make_chaos(x_points, r_points);
+    retval = make_chaos(x_points, r_points, eps_abs);
 done:
     return retval;
 }
 
-int make_chaos(size_t x_points, size_t r_points)
+int make_chaos(size_t x_points, size_t r_points, double eps_abs)
 {
     int retval = EXIT_SUCCESS;
     double x[2];
@@ -117,15 +117,15 @@ int make_chaos(size_t x_points, size_t r_points)
     for (i = 0; i < r_points; ++i, r += r_step)
     {
         x[0] = x[1] = 0.1;
-        for (j = 0; j < x_points / 10; ++j)
+        for (j = 0; j < x_points * 10; ++j)
         {
             model_cb(x, (void *)(&r));
             x[0] = x[1];
         }
-
+        printf("%e %e\n", r, x[1]);
         for (j = 0; j < x_points; ++j)
         {
-            if (model_cb(x, (void *)(&r)) > 0)
+            if (model_cb(x, (void *)(&r)) > eps_abs)
             {
                 printf("%e %e\n", r, x[1]);
             }
@@ -140,8 +140,7 @@ double model_cb(double x[], void *params)
 {
     double r = ((double *)params)[0];
 
-    /* x[1] = 4.0 * r * x[0] * (1.0 - x[0]); */
-    x[1] = x[1] * exp(r * (1 - x[1]));
+    x[1] = 4.0 * r * x[0] * (1.0 - x[0]);
 
     return fabs(x[0] - x[1]);
 }
