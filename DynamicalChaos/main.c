@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #define UNUSED(x) (void)(x)
+#define MAX_POINTS_AT_R_STEP    (4096)
 
 #define DEFAULT_STEP            (1)
 #define MAX_STRING_SIZE         (4096)
@@ -108,31 +109,75 @@ done:
 
 int make_chaos(size_t x_points, size_t r_points, double eps_abs)
 {
+    FILE * division_points = fopen("div_points.dat", "w");
     int retval = EXIT_SUCCESS;
+    int prev_len = 1;
+    double current_r_points[MAX_POINTS_AT_R_STEP];
     double x[2];
-    double r = 0, r_step = 1.0 / r_points;
+    double r = 0.3, r_step = 1.0 / r_points;
+    double div_points[MAX_POINTS_AT_R_STEP];
+    double len = 0;
+    double delta = 0;
 
-    size_t i, j;
+    uint8_t is_div_point = 0;
+    size_t i, j, k, K = 0, N = 0;
 
-    for (i = 0; i < r_points; ++i, r += r_step)
+    for (i = 3000; i < r_points; ++i, r += r_step)
     {
+        is_div_point = 0;
+        K = 0;
         x[0] = x[1] = 0.1;
-        for (j = 0; j < x_points * 10; ++j)
+
+        for (j = 0; j < x_points * 100; ++j)
         {
             model_cb(x, (void *)(&r));
             x[0] = x[1];
         }
-        printf("%e %e\n", r, x[1]);
+        current_r_points[K++] = x[1];
         for (j = 0; j < x_points; ++j)
         {
-            if (model_cb(x, (void *)(&r)) > eps_abs)
+            double current_point = model_cb(x, (void *)(&r));
+            uint8_t to_add = 1;
+            for (k = 0; k < K; ++k)
             {
-                printf("%e %e\n", r, x[1]);
+                if (fabs(current_point - current_r_points[k]) < eps_abs)
+                {
+                    /*
+                     * Then points are close to each other and there is no need
+                     * to add new one
+                     */
+                    to_add = 0;
+                }
+            }
+            if (to_add)
+            {
+                current_r_points[K++] = current_point;
             }
             x[0] = x[1];
         }
-    }
+        len = log2(K);
+        is_div_point = (len == ((double)(int)(len)) && K > prev_len);
+        if (is_div_point)
+        {
+            prev_len = K;
+            fprintf(stderr, "%lu %f %f\n", K, r, eps_abs);
+            for (k = 1; k < K; k++)
+            {
+                fprintf(division_points, "%e %e\n", r, current_r_points[k]);
+            }
+            div_points[N++] = r;
+            eps_abs *= 10;
+        }
 
+        for (k = 0; k < K; ++k)
+        {
+            printf("%e %e\n", r, current_r_points[k]);
+        }
+    }
+    N -= 1;
+    fclose(division_points);
+    delta = (div_points[N - 1] - div_points[N - 2]) / (div_points[N] - div_points[N - 1]);
+    fprintf(stderr, "Delta: %f\n", delta);
     return retval;
 }
 
@@ -142,7 +187,7 @@ double model_cb(double x[], void *params)
 
     x[1] = 4.0 * r * x[0] * (1.0 - x[0]);
 
-    return fabs(x[0] - x[1]);
+    return x[1];
 }
 /* "a:f:hp:r:t:vA:B:C:D:P:T:" */
 void print_usage()

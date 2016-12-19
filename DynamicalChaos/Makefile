@@ -3,6 +3,7 @@ CC = gcc
 LD = gcc
 RM = rm -rf
 PLOT = gnuplot
+VIEWER = open
 
 TARGET = dynamical-chaos
 TOPDIR = ..
@@ -69,10 +70,11 @@ clean_all: clean
 
 example_data: $(TARGET)
 	@chmod +x $(TARGET)
-	./$(TARGET) -a 1e-5 -r 1000 -v -x 100
+	./$(TARGET) -a 1e-10 -r 10000 -v -x 3000
 
 plot:
 	$(PLOT) plot.gp
+	$(VIEWER) plot.png
 
 info:
 	@echo "### Diagnostic info ###"
