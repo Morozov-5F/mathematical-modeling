@@ -8,11 +8,13 @@ unset key
 
 set size square
 
-set xrange [0:100]
-set yrange [0:100]
+set xrange [-1:]
+set yrange [-1:]
 
-set palette defined ( 0 0 0 0, 1 1 1 1 )
-set palette rgb 23,28,3
+# set palette defined ( 0 0 0 0, 1 1 1 1 )
+# set palette rgb 23,28,3
 # set pal def (0 "grey", 1 "black")
+set grid
+set palette model CMY rgbformulae 7,5,15
 
 plot "data.dat" matrix with image
