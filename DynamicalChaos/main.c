@@ -114,7 +114,7 @@ int make_chaos(size_t x_points, size_t r_points, double eps_abs)
     int prev_len = 1;
     double current_r_points[MAX_POINTS_AT_R_STEP];
     double x[2];
-    double r = 0.3, r_step = 1.0 / r_points;
+    double r = 0, r_step = 1.0 / r_points;
     double div_points[MAX_POINTS_AT_R_STEP];
     double len = 0;
     double delta = 0;
@@ -122,11 +122,11 @@ int make_chaos(size_t x_points, size_t r_points, double eps_abs)
     uint8_t is_div_point = 0;
     size_t i, j, k, K = 0, N = 0;
 
-    for (i = 3000; i < r_points; ++i, r += r_step)
+    for (i = 0; i < r_points; ++i, r += r_step)
     {
         is_div_point = 0;
         K = 0;
-        x[0] = x[1] = 0.1;
+        x[0] = x[1] = 0.5;
 
         for (j = 0; j < x_points * 100; ++j)
         {
@@ -166,7 +166,6 @@ int make_chaos(size_t x_points, size_t r_points, double eps_abs)
                 fprintf(division_points, "%e %e\n", r, current_r_points[k]);
             }
             div_points[N++] = r;
-            eps_abs *= 10;
         }
 
         for (k = 0; k < K; ++k)
