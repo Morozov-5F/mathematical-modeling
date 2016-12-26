@@ -55,6 +55,8 @@ pendulum
 string
 predator_prey
 holling-tanner
+percollation
+dynamical-chaos
 
 # OS-specific
 .DS_Store
