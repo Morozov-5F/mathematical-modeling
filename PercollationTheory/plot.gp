@@ -2,7 +2,7 @@ set term pngcairo enhanced size 1024,768 font "CMU Serif, 12"
 
 set out "matrix.png"
 
-set title "Percollation theory model" font "CMU Serif, 20"
+set title "Lorenz attractor" font "CMU Serif, 20"
 
 unset key
 

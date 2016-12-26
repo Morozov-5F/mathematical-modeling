@@ -22,10 +22,6 @@
 
 #define OPTION_DEFAULT_FILE     "data.dat"
 
-#define OPTION_DEFAULT_GRID_SIZE        (size_t)(100)
-#define OPTION_DEFAULT_FILL_PROBABILTY          (0.5)
-#define OPTIOND_DEFAULT_RANDOM_SEED             (0)
-
 void print_usage();
 
 int fill_grid(gsl_matrix * matrix, double fill_probability);
@@ -42,14 +38,6 @@ int main(int argc, char *const * argv)
     int verbose = 0;
     int force_save = 0;
     char file_name[MAX_STRING_SIZE] = OPTION_DEFAULT_FILE;
-
-    gsl_matrix * matrix = NULL;
-
-    double p = OPTION_DEFAULT_FILL_PROBABILTY;
-    double step = DEFAULT_STEP;
-    size_t L = OPTION_DEFAULT_GRID_SIZE;
-
-    unsigned int seed = OPTIOND_DEFAULT_RANDOM_SEED;
 
     while ((option = getopt(argc, argv, OPTIONS)) != -1)
     {
