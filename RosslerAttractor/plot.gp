@@ -7,7 +7,7 @@ unset key
 set size square
 set grid
 
-# set view 60, 60
+set view 60, 60
 
 set xlabel "x"
 set ylabel "y"

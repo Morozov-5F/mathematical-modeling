@@ -49,7 +49,7 @@ DATA_TO_REMOVE += $(addsuffix /*.gif,  $(DATA_DIR))
 DATA_TO_REMOVE += $(addsuffix /*.pdf,  $(DATA_DIR))
 
 # Execute flags
-EXEC_FLAGS = -t 1e-2 -T 2000
+EXEC_FLAGS = -t 1e-2 -T 1000 -m 3.5 -v
 
 $(TARGET): $(OBJS)
 	@echo "Linking object files: " $<

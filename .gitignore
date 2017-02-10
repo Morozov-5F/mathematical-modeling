@@ -55,6 +55,7 @@ pendulum
 string
 predator_prey
 holling-tanner
+rossler
 
 # OS-specific
 .DS_Store

@@ -18,7 +18,7 @@
 
 #define DEFAULT_STEP            (1)
 #define MAX_STRING_SIZE         (4096)
-#define OPTIONS                 "a:f:hp:r:t:vw:D:J:K:P:R:S:T:"
+#define OPTIONS                 "a:f:hm:t:vT:"
 
 #define OPTION_DEFAULT_FILE     "data.dat"
 
@@ -27,6 +27,8 @@
 
 #define OPTION_DEFAULT_TIMESTEP                 (1e+0)
 #define OPTION_DEFAULT_END_TIME                 (1e+1)
+
+#define OPTION_DEFAULT_MU                       (3.4)
 
 typedef int (*system_callback)(double, const double *, double *, void *);
 
@@ -52,6 +54,8 @@ int main(int argc, char *const * argv)
 
     double y[3]   = { 0, 0, 0};
 
+    double params[] = { OPTION_DEFAULT_MU };
+
     gsl_odeiv2_system sys;
 
     while ((option = getopt(argc, argv, OPTIONS)) != -1)
@@ -73,6 +77,18 @@ int main(int argc, char *const * argv)
                 print_usage();
                 retval = GSL_SUCCESS;
                 goto done;
+            break;
+            case 'm':
+                if (1 != sscanf(optarg, "%le", &params[0]))
+                {
+                    if (2.6 > params[0] && params[0] > 4.2)
+                    {
+                        fprintf(stderr, "Warning, value %f for mu will not produce classical attractor!\n", params[0]);
+                    }
+                    fprintf(stderr, "Error: bad mu value. Should be number.\n");
+                    retval = GSL_ERANGE;
+                    goto done;
+                }
             break;
             case 't':
                 if (1 != sscanf(optarg, "%le", &time_step))
@@ -106,6 +122,7 @@ int main(int argc, char *const * argv)
         printf("# Relative error:                       %e\n", eps_rel);
         printf("# Time step:                            %e\n", time_step);
         printf("# End time:                             %f\n", end_time);
+        printf("# Attractor parameter (mu)              %f\n", params[0]);
     }
 
     if (stdout != freopen(file_name, "w", stdout))
@@ -118,7 +135,7 @@ int main(int argc, char *const * argv)
     sys.function  = rossler_cb;
     sys.jacobian  = NULL;
     sys.dimension = 3;
-    sys.params    = NULL;
+    sys.params    = params;
 
     retval = solve_ode_system(&sys, y, eps_abs, eps_rel, time_step, end_time);
 done:
@@ -152,7 +169,7 @@ int solve_ode_system(gsl_odeiv2_system * sys, double y[], double eps_abs,
 
 int rossler_cb(double t, const double y[], double dydt[], void *params)
 {
-    double mu = 3.4;
+    double mu = ((double *)params)[0];
 
     UNUSED(t);
 
@@ -163,15 +180,15 @@ int rossler_cb(double t, const double y[], double dydt[], void *params)
     return GSL_SUCCESS;
 }
 
-/* "a:f:hp:r:t:vA:B:C:D:P:T:" */
 void print_usage()
 {
-    printf("OVERVIEW: Holling-Tanner predator-prey model simulation.\n\n");
-    printf("USAGE: holling-tanner [options]\n\n");
+    printf("OVERVIEW: Produces data to Rössler Attractor.\n\n");
+    printf("USAGE: rossler [options]\n\n");
     printf("OPTIONS:\n");
     printf("  -a <error>     Absolute error. Default is %e\n", OPTION_DEFAULT_RERROR);
     printf("  -f <file>      Output file. Default is " OPTION_DEFAULT_FILE "\n");
     printf("  -h             Print this message\n");
+    printf("  -m <value>     Attractor parameter (mu). Default is %e\n", OPTION_DEFAULT_MU);
     printf("  -t <time_step> Time step. Default is %e\n", OPTION_DEFAULT_TIMESTEP);
     printf("  -v             Verbose mode\n");
     printf("  -T <time>      End time. Default is %e\n", OPTION_DEFAULT_END_TIME);
